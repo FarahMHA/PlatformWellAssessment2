@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PlatformWellAssessment2.DtoModels;
 using PlatformWellAssessment2.Operations;
+using System.IO;
 using static PlatformWellAssessment2.DtoModels.PlatformWellModelDto;
 
 namespace PlatformWellAssessment2.Controllers
@@ -17,7 +18,7 @@ namespace PlatformWellAssessment2.Controllers
             _platformWellManagement = platformWellManagement;
         }
 
-        [HttpGet(Name = "GetAllPlatformWell")]
+        [HttpGet("GetAllPlatformWell")]
         public async Task<ActionResult<PlatformDto>> GetAllPlatformWell()
         {
             var result = await _platformWellManagement.GetAllPlatformWell();
@@ -29,6 +30,24 @@ namespace PlatformWellAssessment2.Controllers
         {
             var result = await _platformWellManagement.GetSpecificPlatform(id);
             return Ok(result);
+        }
+
+        [HttpPost("PlatformExcelData")]
+        public async Task<ActionResult> DownloadBenchmarkExcalData()
+        {
+
+            var result =
+                await _platformWellManagement.DownloadPlatformExcelData();
+            return File(result.MitTemplate, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                result.TemplateName);
+        }
+
+        [HttpGet("ExtractExcelData")]
+        public void getExcelFile()
+        {
+            var result = _platformWellManagement.ExtractExcelData();
+           // _platformWellManagement.getExcelFile();
+           // return Ok(result);
         }
     }
 }
